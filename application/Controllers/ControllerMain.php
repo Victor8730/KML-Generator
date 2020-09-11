@@ -66,11 +66,17 @@ class ControllerMain extends Controller
         }
 
         $kmlOutput = $dom->saveXML();
-                header('Content-type: application/vnd.google-earth.kml+xml');
-                header('Content-disposition: attachment; filename=DN' . $strOutside['direction'] . '_' . date("Ymd_His") . '.kml');
-                echo $kmlOutput;
+        header('Content-type: application/vnd.google-earth.kml+xml');
+        header('Content-disposition: attachment; filename=DN' . $strOutside['direction'] . '_' . date("Ymd_His") . '.kml');
+        echo $kmlOutput;
     }
 
+    /**
+     * Creating a location according to the specified parameters
+     * @param $dataDB
+     * @param $dom
+     * @param $docNode
+     */
     private function createNode($dataDB, $dom, $docNode)
     {
         $description = '';
@@ -103,6 +109,11 @@ class ControllerMain extends Controller
         $pointNode->appendChild($coorNode);
     }
 
+    /**
+     * Formation of a convenient array for working in a template
+     * @param array $rowsFromDb
+     * @return array
+     */
     private function createArray(array $rowsFromDb): array
     {
         $outside = $inside = [];
