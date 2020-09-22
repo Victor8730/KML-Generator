@@ -26,23 +26,26 @@ class ControllerMain extends Controller
         }
     }
 
+    public function actionExampleCsv()
+    {
+        echo implode(';', [1, 'Dnepr', 48.4786954,35.021489])."\n";
+        echo implode(';', [2, 'Kiev', 50.4712958,30.5151878])."\n";
+        echo implode(';', [3, 'Lviv', 49.8326679,23.9421962]);
+    }
+
     /**
      * Generate kml file
      */
     public function actionKml()
     {
         $strOutside = $this->validate();
-// Creates the Document.
         $dom = new \DOMDocument('1.0', 'UTF-8');
-// Creates the root KML element and appends it to the root document.
         $node = $dom->createElementNS('http://earth.google.com/kml/2.1', 'kml');
         $parNode = $dom->appendChild($node);
-// Creates a KML Document element and append it to the KML element.
         $dnode = $dom->createElement('Document');
         $docNode = $parNode->appendChild($dnode);
-// Creates Style elements trainStyle
         $restStyleNode = $dom->createElement('Style');
-        $restStyleNode->setAttribute('id', 'trainStyle');
+        $restStyleNode->setAttribute('id', 'exampleStyle');
         $restIconstyleNode = $dom->createElement('IconStyle');
         $restIconstyleNode->setAttribute('id', 'trainIcon');
         $restIconNode = $dom->createElement('Icon');
@@ -51,23 +54,18 @@ class ControllerMain extends Controller
         $restIconstyleNode->appendChild($restIconNode);
         $restStyleNode->appendChild($restIconstyleNode);
         $docNode->appendChild($restStyleNode);
-//Working with data
-        if (!empty($strOutside['db'])) {
-            $rowsFromDb = explode("\n", file_get_contents($strOutside['db']));
-        } else {
-            $rowsFromDb = ['id' => 1, 'title' => 'title', 'name' => 'name', 'value' => 'val', 'lng' => '', 'lat' => '', 'type' => 'train'];
-        }
-        $outside = $this->createArray($rowsFromDb);
+        $data = ($strOutside['type'] == 0) ? $this->createArrayFromXml($strOutside['data']) : $this->createArrayFromCsv($strOutside['data']);
 
-        foreach ($outside as $dataDB) {
-            if (!empty($dataDB)) {
-                $this->createNode($dataDB, $dom, $docNode);
+        if (!empty($data) && is_array($data)) {
+            foreach ($data as $item) {
+                $this->createNode($item, $dom, $docNode);
             }
         }
 
         $kmlOutput = $dom->saveXML();
         header('Content-type: application/vnd.google-earth.kml+xml');
-        header('Content-disposition: attachment; filename=DN' . $strOutside['direction'] . '_' . date("Ymd_His") . '.kml');
+        header('Content-disposition: attachment; filename=KML_' . date("Ymd_His") . '.kml');
+
         echo $kmlOutput;
     }
 
@@ -98,7 +96,7 @@ class ControllerMain extends Controller
         $placeNode->appendChild($nameNode);
         $descNode = $dom->createElement('description', $description);
         $placeNode->appendChild($descNode);
-        $styleUrl = $dom->createElement('styleUrl', '#' . $dataDB['type'] . 'Style');
+        $styleUrl = $dom->createElement('styleUrl', '#exampleStyle');
         $placeNode->appendChild($styleUrl);
         // Creates a Point element.
         $pointNode = $dom->createElement('Point');
@@ -110,29 +108,62 @@ class ControllerMain extends Controller
     }
 
     /**
-     * Formation of a convenient array for working in a template
-     * @param array $rowsFromDb
+     * Create array from csv data
+     * @param string $url
      * @return array
      */
-    private function createArray(array $rowsFromDb): array
+    private function createArrayFromCsv(string $url): array
     {
-        $outside = $inside = [];
+        $rowsFromDb = explode("\n", file_get_contents($url));
+        $array = $inside = [];
+
         foreach ($rowsFromDb as $row) {
             if (!empty($row)) {
-                $itemCsv = str_getcsv($row);
-                $arrItemCsv = explode(';', $itemCsv[0]);
+                $arrItemCsv = str_getcsv($row, ';');
                 $inside['id'] = $arrItemCsv[0];
-                $inside['title'] = $arrItemCsv[1];
-                $inside['name'] = $arrItemCsv[2];
-                $inside['value'] = $arrItemCsv[3];
-                $inside['lng'] = $arrItemCsv[4];
-                $inside['lat'] = $arrItemCsv[5];
-                $inside['type'] = 'train';
-                $outside[$arrItemCsv[0]] = $inside;
+                $inside['name'] = $this->trimSpecialCharacters(trim($arrItemCsv[1]));
+                $inside['lat'] = trim($arrItemCsv[2]);
+                $inside['lng'] = trim($arrItemCsv[3]);
+                $array[$arrItemCsv[0]] = $inside;
             }
         }
 
-        return $outside;
+        return $array;
+    }
+
+    /**
+     * Create array from xml data
+     * @param string $url
+     * @return array
+     */
+    public function createArrayFromXml(string $url): array
+    {
+        $array = [];
+        $xml = simplexml_load_file($url) or die('Error: Cannot create object xml');
+
+        foreach ($xml->station as $item) {
+            if (!empty($item)) {
+                $key = (string)$item->id;
+                $array[$key]['id'] = $key;
+                $array[$key]['name'] = $this->trimSpecialCharacters((string)$item->name);
+                $array[$key]['lng'] = (string)$item->lng;
+                $array[$key]['lat'] = (string)$item->lat;
+            }
+        }
+
+        return $array;
+    }
+
+    /**
+     * Delete special characters
+     * @param string $str
+     * @return string
+     */
+    private function trimSpecialCharacters(string $str): string
+    {
+        $str = preg_replace('/&([a-z])(acute|uml|circ|grave|ring|cedil|slash|tilde|caron|lig|quot|rsquo);/i', '', $str);
+
+        return str_replace('’', '', $str);
     }
 
     /**
@@ -141,15 +172,17 @@ class ControllerMain extends Controller
      */
     private function validate(): array
     {
-        $urlDb = $_POST['url-db'] ?? '';
+        $urlData = $_POST['url-data'] ?? '';
+        $type = $_POST['type'] ?? 0;
 
         try {
-            $urlDb = $this->validator->checkStr($urlDb);
+            $urlData = $this->validator->checkStr($urlData);
+            $type = $this->validator->checkInt((int)$type);
         } catch (NotValidInputException $e) {
             echo $e->getMessage();
         }
 
-        return ['db' => $urlDb];
+        return ['data' => $urlData, 'type' => $type];
     }
 
     /**

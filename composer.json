@@ -16,7 +16,9 @@
     "twbs/bootstrap": "^4.5.2",
     "ext-json": "*",
     "ext-pdo": "*",
-    "php": ">=7.4.0"
+    "php": ">=7.4.0",
+    "ext-dom": "*",
+    "ext-simplexml": "*"
   },
   "autoload": {
     "psr-4": {
