@@ -34,6 +34,11 @@ class Base implements face\Base
     protected const PATH_VIEWS = 'Views';
 
     /**
+     * Tests folder name
+     */
+    protected const PATH_TESTS = 'Tests';
+
+    /**
      * @var Validator|object
      */
     protected object $validator;

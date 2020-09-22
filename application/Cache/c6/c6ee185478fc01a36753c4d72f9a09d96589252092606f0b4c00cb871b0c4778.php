@@ -48,21 +48,30 @@ class __TwigTemplate_072919fa5d8c672658f8f010fb26aca46ba0383b43d07be427fc5bf7010
         $macros = $this->macros;
         // line 3
         echo "    <div class=\"col-md-12 order-md-2\">
-            <div class=\"card text-center\">
-                <form action=\"/main/kml\" method=\"post\" class=\"my-2\">
-                    <div class=\"input-group px-4\">
-                        <div class=\"input-group-prepend\">
-                            <span class=\"input-group-text\" id=\"url-db\"><i class=\"fa fa-share-alt pr-2\" aria-hidden=\"true\"></i>Data count,   weight</span>
-                        </div>
-                        <input type=\"text\" name=\"url-db\" class=\"form-control\" placeholder=\"Url with csv data\" aria-describedby=\"url-db\" value=\"http://webdb/askvp/rtk_dor.HTML_POGR_VIGR.main\">
+        <div class=\"card text-center\">
+            <form action=\"/main/kml\" method=\"post\" class=\"my-2\">
+                <div class=\"input-group px-4 py-2\">
+                    <div class=\"input-group-prepend\">
+                        <span class=\"input-group-text\" id=\"url-data\"><i class=\"fa fa-share-alt pr-2\" aria-hidden=\"true\"></i>Data</span>
                     </div>
-                    <div class=\"form-group row\">
-                        <div class=\"col-sm-12 py-2\">
-                            <button type=\"submit\" class=\"btn btn-success\">Generate kml</button>
-                        </div>
+                    <input type=\"text\" name=\"url-data\" class=\"form-control\" placeholder=\"Url with csv or xml data\" aria-describedby=\"url-data\" value=\"\">
+                </div>
+                <div class=\"input-group px-4 py-2\">
+                    <div class=\"input-group-prepend\">
+                        <span class=\"input-group-text\" id=\"url-type\"><i class=\"fa fa-file-text pr-2\" aria-hidden=\"true\"></i>Type of data</span>
                     </div>
-                </form>
-            </div>
+                    <select name=\"type\" class=\"form-control\" id=\"url-type\">
+                        <option value=\"0\">XML</option>
+                        <option value=\"1\">CSV</option>
+                    </select>
+                </div>
+                <div class=\"form-group row\">
+                    <div class=\"col-sm-12 py-2\">
+                        <button type=\"submit\" class=\"btn btn-success\">Generate kml</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 ";
     }
@@ -84,6 +93,6 @@ class __TwigTemplate_072919fa5d8c672658f8f010fb26aca46ba0383b43d07be427fc5bf7010
 
     public function getSourceContext()
     {
-        return new Source("", "main/main.twig", "C:\\os\\domains\\kml\\application\\Views\\main\\main.twig");
+        return new Source("", "main/main.twig", "D:\\server20\\domains\\KML-Generator\\application\\Views\\main\\main.twig");
     }
 }

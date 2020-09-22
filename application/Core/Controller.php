@@ -18,7 +18,6 @@ class Controller extends Base
      */
     protected bool $isAjax;
 
-
     /**
      * Controller constructor.
      */

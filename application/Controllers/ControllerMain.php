@@ -112,7 +112,7 @@ class ControllerMain extends Controller
      * @param string $url
      * @return array
      */
-    private function createArrayFromCsv(string $url): array
+    public function createArrayFromCsv(string $url): array
     {
         $rowsFromDb = explode("\n", file_get_contents($url));
         $array = $inside = [];
@@ -136,7 +136,7 @@ class ControllerMain extends Controller
      * @param string $url
      * @return array
      */
-    public function createArrayFromXml(string $url): array
+    protected function createArrayFromXml(string $url): array
     {
         $array = [];
         $xml = simplexml_load_file($url) or die('Error: Cannot create object xml');
@@ -172,7 +172,7 @@ class ControllerMain extends Controller
      */
     private function validate(): array
     {
-        $urlData = $_POST['url-data'] ?? '';
+        $urlData = $_POST['url-data'] ?? '/main/examplecsv';
         $type = $_POST['type'] ?? 0;
 
         try {
