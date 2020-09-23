@@ -26,11 +26,20 @@ class ControllerMain extends Controller
         }
     }
 
-    public function actionExampleCsv()
+    /**
+     * Show page with example data csv
+     */
+    public function actionExampleCsv(): void
     {
-        echo implode(';', [1, 'Dnepr', 48.4786954,35.021489])."\n";
-        echo implode(';', [2, 'Kiev', 50.4712958,30.5151878])."\n";
-        echo implode(';', [3, 'Lviv', 49.8326679,23.9421962]);
+        echo $this->exampleCsv();
+    }
+
+    /**
+     * Show page with example xml data
+     */
+    public function actionExampleXml(): void
+    {
+        echo $this->exampleXml();
     }
 
     /**
@@ -54,7 +63,7 @@ class ControllerMain extends Controller
         $restIconstyleNode->appendChild($restIconNode);
         $restStyleNode->appendChild($restIconstyleNode);
         $docNode->appendChild($restStyleNode);
-        $data = ($strOutside['type'] == 0) ? $this->createArrayFromXml($strOutside['data']) : $this->createArrayFromCsv($strOutside['data']);
+        $data = ($strOutside['type'] === 1) ? $this->createArrayFromXml($strOutside['data']) : $this->createArrayFromCsv($strOutside['data']);
 
         if (!empty($data) && is_array($data)) {
             foreach ($data as $item) {
@@ -67,6 +76,41 @@ class ControllerMain extends Controller
         header('Content-disposition: attachment; filename=KML_' . date("Ymd_His") . '.kml');
 
         echo $kmlOutput;
+    }
+
+    /**
+     * Generate example csv
+     * @return string
+     */
+    public function exampleCsv(): string
+    {
+        return '1; Dnepr; 48.4786954; 35.021489' . "\n" . '2; Kiev; 50.4712958; 30.5151878' . "\n" . '3; Lviv; 49.8326679; 23.9421962';
+    }
+
+    /**
+     * generate example xml
+     * @return string
+     */
+    public function exampleXml(): string
+    {
+        $dom = new \DOMDocument();
+        $dom->encoding = 'utf-8';
+        $dom->xmlVersion = '1.0';
+        $dom->formatOutput = true;
+        $root = $dom->createElement('document');
+        $movie_node = $dom->createElement('station');
+        $child_node_title = $dom->createElement('id', '1');
+        $movie_node->appendChild($child_node_title);
+        $child_node_year = $dom->createElement('name', 'Dnepr');
+        $movie_node->appendChild($child_node_year);
+        $childNodeLng = $dom->createElement('lng', '35.021489');
+        $movie_node->appendChild($childNodeLng);
+        $childNodeLat = $dom->createElement('lat', '48.4786954');
+        $movie_node->appendChild($childNodeLat);
+        $root->appendChild($movie_node);
+        $dom->appendChild($root);
+
+        return $dom->saveXML();
     }
 
     /**
@@ -107,14 +151,17 @@ class ControllerMain extends Controller
         $pointNode->appendChild($coorNode);
     }
 
+
     /**
      * Create array from csv data
      * @param string $url
+     * @param int $test
      * @return array
      */
-    public function createArrayFromCsv(string $url): array
+    public function createArrayFromCsv(string $url, int $test = 0): array
     {
-        $rowsFromDb = explode("\n", file_get_contents($url));
+        $data = ($test !== 1) ? file_get_contents($url) : $url;
+        $rowsFromDb = explode("\n", $data);
         $array = $inside = [];
 
         foreach ($rowsFromDb as $row) {
@@ -131,15 +178,17 @@ class ControllerMain extends Controller
         return $array;
     }
 
+
     /**
      * Create array from xml data
      * @param string $url
+     * @param int $test
      * @return array
      */
-    protected function createArrayFromXml(string $url): array
+    public function createArrayFromXml(string $url, int $test = 0): array
     {
         $array = [];
-        $xml = simplexml_load_file($url) or die('Error: Cannot create object xml');
+        $xml = ($test !== 1) ? simplexml_load_file($url) : simplexml_load_string($url);
 
         foreach ($xml->station as $item) {
             if (!empty($item)) {
@@ -159,11 +208,11 @@ class ControllerMain extends Controller
      * @param string $str
      * @return string
      */
-    private function trimSpecialCharacters(string $str): string
+    public function trimSpecialCharacters(string $str): string
     {
-        $str = preg_replace('/&([a-z])(acute|uml|circ|grave|ring|cedil|slash|tilde|caron|lig|quot|rsquo);/i', '', $str);
+        $replace = preg_replace('/&(acute|uml|circ|grave|ring|cedil|slash|tilde|caron|lig|quot|rsquo);/i', '', $str);
 
-        return str_replace('’', '', $str);
+        return str_replace('’', '', $replace);
     }
 
     /**
@@ -172,7 +221,8 @@ class ControllerMain extends Controller
      */
     private function validate(): array
     {
-        $urlData = $_POST['url-data'] ?? '/main/examplecsv';
+        $exampleUrl = 'http://' . $_SERVER['SERVER_NAME'] . '/main/examplecsv';
+        $urlData = (isset($_POST['url-data']) && !empty($_POST['url-data'])) ? $_POST['url-data'] : $exampleUrl;
         $type = $_POST['type'] ?? 0;
 
         try {

@@ -8,6 +8,8 @@ class Base implements face\Base
 {
     protected const VERSION = '1.0.0';
 
+    protected const PATH_ROOT = __DIR__ . '/../..';
+
     /**
      * Application folder name
      */

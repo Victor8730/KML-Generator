@@ -23,9 +23,9 @@ class Controller extends Base
      */
     public function __construct()
     {
-        $loader = new \Twig\Loader\FilesystemLoader(Base::PATH_APPLICATION . '/' . Base::PATH_VIEWS);
+        $loader = new \Twig\Loader\FilesystemLoader(Base::PATH_ROOT . '/' . Base::PATH_APPLICATION . '/' . Base::PATH_VIEWS);
         $this->view = new \Twig\Environment($loader, [
-            'cache' => Base::PATH_APPLICATION . '/' . Base::PATH_CACHE,
+            'cache' => Base::PATH_ROOT . '/' .Base::PATH_APPLICATION . '/' . Base::PATH_CACHE,
             'auto_reload' => true
         ]);
         $this->isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
