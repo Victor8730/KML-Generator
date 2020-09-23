@@ -63,7 +63,7 @@ class ControllerMain extends Controller
         $restIconstyleNode->appendChild($restIconNode);
         $restStyleNode->appendChild($restIconstyleNode);
         $docNode->appendChild($restStyleNode);
-        $data = ($strOutside['type'] === 1) ? $this->createArrayFromXml($strOutside['data']) : $this->createArrayFromCsv($strOutside['data']);
+        $data = ($strOutside['type'] === 0) ? $this->createArrayFromCsv($strOutside['data']) : $this->createArrayFromXml($strOutside['data']);
 
         if (!empty($data) && is_array($data)) {
             foreach ($data as $item) {
@@ -221,9 +221,9 @@ class ControllerMain extends Controller
      */
     private function validate(): array
     {
-        $exampleUrl = 'http://' . $_SERVER['SERVER_NAME'] . '/main/examplecsv';
-        $urlData = (isset($_POST['url-data']) && !empty($_POST['url-data'])) ? $_POST['url-data'] : $exampleUrl;
         $type = $_POST['type'] ?? 0;
+        $exampleUrl = ($type == 0) ? 'http://' . $_SERVER['SERVER_NAME'] . '/main/examplecsv' : 'http://' . $_SERVER['SERVER_NAME'] . '/main/examplexml';
+        $urlData = (isset($_POST['url-data']) && !empty($_POST['url-data'])) ? $_POST['url-data'] : $exampleUrl;
 
         try {
             $urlData = $this->validator->checkStr($urlData);

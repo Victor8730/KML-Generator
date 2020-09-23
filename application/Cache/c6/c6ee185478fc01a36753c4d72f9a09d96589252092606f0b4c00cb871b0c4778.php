@@ -61,8 +61,8 @@ class __TwigTemplate_072919fa5d8c672658f8f010fb26aca46ba0383b43d07be427fc5bf7010
                         <span class=\"input-group-text\" id=\"url-type\"><i class=\"fa fa-file-text pr-2\" aria-hidden=\"true\"></i>Type of data</span>
                     </div>
                     <select name=\"type\" class=\"form-control\" id=\"url-type\">
-                        <option value=\"0\">XML</option>
-                        <option value=\"1\">CSV</option>
+                        <option value=\"0\">CSV</option>
+                        <option value=\"1\">XML</option>
                     </select>
                 </div>
                 <div class=\"form-group row\">

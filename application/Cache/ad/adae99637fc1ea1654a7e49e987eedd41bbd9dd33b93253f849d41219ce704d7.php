@@ -35,48 +35,18 @@ class __TwigTemplate_73d80b17cd2a67a094c9524718cac557cf6e305569aea005907a9314c47
         $macros = $this->macros;
         // line 1
         echo "<div>
-    <h2>Навантаження (ваг/тис.тон)</h2>
-    <ul>
-        <li>";
-        // line 4
-        echo twig_escape_filter($this->env, ($context["year"] ?? null), "html", null, true);
-        echo ": ";
-        echo twig_escape_filter($this->env, ($context["countLoad"] ?? null), "html", null, true);
-        echo "/";
-        echo twig_escape_filter($this->env, ($context["weightLoad"] ?? null), "html", null, true);
-        echo "</li>
-        <li>";
-        // line 5
-        echo twig_escape_filter($this->env, ($context["yearOld"] ?? null), "html", null, true);
-        echo ": ";
-        echo twig_escape_filter($this->env, ($context["countLoadOld"] ?? null), "html", null, true);
-        echo "/";
-        echo twig_escape_filter($this->env, ($context["weightLoadOld"] ?? null), "html", null, true);
-        echo "</li>
-    </ul>
-</div>
-<div>
-    <h2>Відсоток до минулого року (тис.тонн): ";
-        // line 9
-        echo twig_escape_filter($this->env, ($context["percentWeightLoad"] ?? null), "html", null, true);
-        echo "%</h2>
-</div>
-<div>
-    <h2>Вивантаження (ваг)</h2>
-    <ul>
-        <li>";
-        // line 14
-        echo twig_escape_filter($this->env, ($context["year"] ?? null), "html", null, true);
-        echo ": ";
-        echo twig_escape_filter($this->env, ($context["countUnload"] ?? null), "html", null, true);
-        echo "</li>
-        <li>";
-        // line 15
-        echo twig_escape_filter($this->env, ($context["yearOld"] ?? null), "html", null, true);
-        echo ": ";
-        echo twig_escape_filter($this->env, ($context["cuntUnloadOld"] ?? null), "html", null, true);
-        echo "</li>
-    </ul>
+    <p>";
+        // line 2
+        echo twig_escape_filter($this->env, ($context["id"] ?? null), "html", null, true);
+        echo ":";
+        echo twig_escape_filter($this->env, ($context["name"] ?? null), "html", null, true);
+        echo "</p>
+    <p>";
+        // line 3
+        echo twig_escape_filter($this->env, ($context["lng"] ?? null), "html", null, true);
+        echo ":";
+        echo twig_escape_filter($this->env, ($context["lat"] ?? null), "html", null, true);
+        echo "</p>
 </div>
 ";
     }
@@ -93,11 +63,11 @@ class __TwigTemplate_73d80b17cd2a67a094c9524718cac557cf6e305569aea005907a9314c47
 
     public function getDebugInfo()
     {
-        return array (  75 => 15,  69 => 14,  61 => 9,  50 => 5,  42 => 4,  37 => 1,);
+        return array (  46 => 3,  40 => 2,  37 => 1,);
     }
 
     public function getSourceContext()
     {
-        return new Source("", "kml/desc.twig", "C:\\os\\domains\\kml\\application\\Views\\kml\\desc.twig");
+        return new Source("", "kml/desc.twig", "D:\\server20\\domains\\KML-Generator\\application\\Views\\kml\\desc.twig");
     }
 }
