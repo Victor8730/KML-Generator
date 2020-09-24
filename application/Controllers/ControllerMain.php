@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Controllers;
 
 use Core\Controller;
+use Core\Route;
+use Exceptions\NotExistFileFromUrlException;
 use Exceptions\NotValidInputException;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -19,7 +21,7 @@ class ControllerMain extends Controller
     public function actionIndex()
     {
         try {
-            echo $this->view->render('main/' . $this->getNameView(), $this->dataProvider());
+            echo $this->view->render('main/' . $this->getNameView());
         } catch (LoaderError $e) {
         } catch (RuntimeError $e) {
         } catch (SyntaxError $e) {
@@ -45,7 +47,7 @@ class ControllerMain extends Controller
     /**
      * Generate kml file
      */
-    public function actionKml()
+    public function actionKml(): void
     {
         $strOutside = $this->validate();
         $dom = new \DOMDocument('1.0', 'UTF-8');
@@ -63,7 +65,8 @@ class ControllerMain extends Controller
         $restIconstyleNode->appendChild($restIconNode);
         $restStyleNode->appendChild($restIconstyleNode);
         $docNode->appendChild($restStyleNode);
-        $data = ($strOutside['type'] === 0) ? $this->createArrayFromCsv($strOutside['data']) : $this->createArrayFromXml($strOutside['data']);
+        $dataFromUrl = $this->getDataFromUrl($strOutside);
+        $data = ($strOutside['type'] === 0) ? $this->createArrayFromCsv($dataFromUrl) : $this->createArrayFromXml($dataFromUrl);
 
         if (!empty($data) && is_array($data)) {
             foreach ($data as $item) {
@@ -79,7 +82,7 @@ class ControllerMain extends Controller
     }
 
     /**
-     * Generate example csv
+     * Generate example csv file
      * @return string
      */
     public function exampleCsv(): string
@@ -153,21 +156,43 @@ class ControllerMain extends Controller
 
 
     /**
+     * Get data
+     * @param array $dataOutside
+     * @return false|\SimpleXMLElement|string[]
+     */
+    public function getDataFromUrl(array $dataOutside)
+    {
+        $rowsFromFile = '';
+
+        try {
+            $this->validator->checkFileExistFromUrl($dataOutside['url']);
+
+            if($dataOutside['type'] === 0){
+                $data = file_get_contents($dataOutside['url']);
+                $rowsFromFile = explode("\n", $data);
+            }else{
+                $rowsFromFile =  simplexml_load_file($dataOutside['url']);
+            }
+        }catch (NotExistFileFromUrlException $e){
+            Route::errorPage404();
+        }
+
+        return $rowsFromFile;
+    }
+
+    /**
      * Create array from csv data
-     * @param string $url
-     * @param int $test
+     * @param array $dataFromUrl
      * @return array
      */
-    public function createArrayFromCsv(string $url, int $test = 0): array
+    public function createArrayFromCsv(array $dataFromUrl): array
     {
-        $data = ($test !== 1) ? file_get_contents($url) : $url;
-        $rowsFromDb = explode("\n", $data);
         $array = $inside = [];
 
-        foreach ($rowsFromDb as $row) {
+        foreach ($dataFromUrl as $row) {
             if (!empty($row)) {
                 $arrItemCsv = str_getcsv($row, ';');
-                $inside['id'] = $arrItemCsv[0];
+                $inside['id'] = trim($arrItemCsv[0]);
                 $inside['name'] = $this->trimSpecialCharacters(trim($arrItemCsv[1]));
                 $inside['lat'] = trim($arrItemCsv[2]);
                 $inside['lng'] = trim($arrItemCsv[3]);
@@ -178,19 +203,16 @@ class ControllerMain extends Controller
         return $array;
     }
 
-
     /**
      * Create array from xml data
-     * @param string $url
-     * @param int $test
+     * @param object $dataFromUrl
      * @return array
      */
-    public function createArrayFromXml(string $url, int $test = 0): array
+    public function createArrayFromXml(object $dataFromUrl): array
     {
         $array = [];
-        $xml = ($test !== 1) ? simplexml_load_file($url) : simplexml_load_string($url);
 
-        foreach ($xml->station as $item) {
+        foreach ($dataFromUrl->station as $item) {
             if (!empty($item)) {
                 $key = (string)$item->id;
                 $array[$key]['id'] = $key;
@@ -232,15 +254,6 @@ class ControllerMain extends Controller
             echo $e->getMessage();
         }
 
-        return ['data' => $urlData, 'type' => $type];
-    }
-
-    /**
-     * Data provider for page rendering, return array with data
-     * @return array
-     */
-    private function dataProvider(): array
-    {
-        return [];
+        return ['url' => $urlData, 'type' => $type];
     }
 }

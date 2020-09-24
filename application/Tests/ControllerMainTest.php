@@ -16,22 +16,55 @@ class ControllerMainTest extends TestCase
         $this->main = new ControllerMain();
     }
 
-    public function testCreateArray()
+    public function testEmpty()
     {
-        $stack = $this->main->createArrayFromCsv($this->main->exampleCsv(), 1);
-        $this->assertNotEmpty($stack);
-
-        $stack = $this->main->createArrayFromXml($this->main->exampleXml(), 1);
-        $this->assertNotEmpty($stack);
+        $stack = [];
+        $this->assertEmpty($stack);
 
         return $stack;
     }
 
-    public function testTrim()
+    /**
+     * @depends      testEmpty
+     * @dataProvider additionProviderCreateArray
+     * @param $stack
+     */
+    public function testCreateArray($stack)
     {
-        $actual = ['&acute;TestName','TestNam&uml;e','T&circ;estName','Te&grave;stName','TestN&ring;ame','TestNam&lig;e','TestN&quot;ame','TestName&rsquo;','Tes’tName'];
-        foreach ($actual as $item) {
-            $this->assertSame('TestName', $this->main->trimSpecialCharacters($item));
-        }
+        $this->assertNotEmpty($stack);
+    }
+
+    public function additionProviderCreateArray()
+    {
+        $main = new ControllerMain();
+
+        return [
+            [$main->exampleCsv()],
+            [$main->exampleXml()]
+        ];
+    }
+
+    /**
+     * @dataProvider additionProviderTrim
+     * @param $actual
+     */
+    public function testTrim($actual)
+    {
+        $this->assertSame('TestName', $this->main->trimSpecialCharacters($actual));
+    }
+
+    public function additionProviderTrim()
+    {
+        return [
+            ['&acute;TestName'],
+            ['TestNam&uml;e'],
+            ['T&circ;estName'],
+            ['Te&grave;stName'],
+            ['TestN&ring;ame'],
+            ['TestNam&lig;e'],
+            ['TestN&quot;ame'],
+            ['TestName&rsquo;'],
+            ['Tes’tName']
+        ];
     }
 }

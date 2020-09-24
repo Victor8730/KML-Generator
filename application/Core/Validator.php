@@ -1,13 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Core;
 
 use Exceptions\{FailedCopyException,
     FailedCreateDirException,
     NotExistFileException,
+    NotExistFileFromUrlException,
     NotExistMethodException,
     NotExistClassException,
-    NotValidInputException};
+    NotValidInputException
+};
+use PHPUnit\TextUI\Exception;
 
 class  Validator
 {
@@ -50,14 +55,16 @@ class  Validator
      * @return bool
      * @throws NotValidInputException
      */
-    public function checkEmpty($val):bool{
-        if(!empty($val)){
+    public function checkEmpty($val): bool
+    {
+        if (!empty($val)) {
             return true;
-        }else{
+        } else {
             $this->setErrors(true);
             throw new NotValidInputException($val);
         }
     }
+
     /**
      * String validation
      * @param $val
@@ -99,7 +106,7 @@ class  Validator
      */
     public function checkUrl(?string $val): string
     {
-        $check = filter_var('http://'.$val, FILTER_VALIDATE_URL);
+        $check = filter_var($val, FILTER_VALIDATE_URL);
         if ($check !== false) {
             return $val;
         } else {
@@ -131,11 +138,11 @@ class  Validator
      * @return false|string
      * @throws NotExistFileException
      */
-    public function checkFileExist(string $file):bool
+    public function checkFileExist(string $file): bool
     {
         if (!file_exists($file)) {
             throw new NotExistFileException($file);
-        }else{
+        } else {
             return true;
         }
     }
@@ -153,6 +160,24 @@ class  Validator
         }
     }
 
+    /**
+     * Check if a file exists on another site
+     * @param string $url
+     * @throws NotExistFileFromUrlException
+     */
+    public function checkFileExistFromUrl(string $url): void
+    {
+        try {
+            $url = $this->checkUrl($url);
+            $urlHeaders = @get_headers($url);
+
+            if (!strpos($urlHeaders[0], '200')) {
+                throw new NotExistFileFromUrlException($url);
+            }
+        }catch (NotValidInputException $e){
+            Route::errorPage404();
+        }
+    }
 
     /**
      * Checking if a class exists
