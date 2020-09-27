@@ -23,5 +23,4 @@ class Controller404 extends Controller
         } catch (SyntaxError $e) {
         }
     }
-
 }

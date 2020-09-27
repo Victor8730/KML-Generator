@@ -39,3 +39,9 @@
 2020-09-24 15:35:12 : Script with problem: C:\os\domains\kml\application\Core\Validator.php | Line with problem: 155 | Method actionExamplexml1 not exist in controller Controllers\ControllerMain
 2020-09-24 15:40:20 : Script with problem: C:\os\domains\kml\application\Core\Validator.php | Line with problem: 155 | Method actionExamplecsv1 not exist in controller Controllers\ControllerMain
 2020-09-24 16:17:36 : Script with problem: C:\os\domains\kml\application\Core\Validator.php | Line with problem: 159 | Method actionExamplexmldddd not exist in controller Controllers\ControllerMain
+2020-09-27 13:54:09 : Script with problem: /var/www/kml-generator-docker/application/Core/Validator.php Line with problem: 144 | file template 'application/Controllers/ControllerFavicon.ico.php' not exist!
+2020-09-27 13:54:13 : Script with problem: /var/www/kml-generator-docker/application/Core/Validator.php Line with problem: 144 | file template 'application/Controllers/ControllerFavicon.ico.php' not exist!
+2020-09-27 21:41:21 : Script with problem: D:\server20\domains\KML-Generator\application\Controllers\ControllerMain.php | Line with problem: 211 | The data received from the url is incorrect, check the data
+2020-09-27 21:47:23 : Script with problem: D:\server20\domains\KML-Generator\application\Controllers\ControllerMain.php | Line with problem: 211 | The data received from the url is incorrect, check the data
+2020-09-27 21:49:17 : Script with problem: D:\server20\domains\KML-Generator\application\Controllers\ControllerMain.php | Line with problem: 242 | The data received from the url is incorrect, check the data
+2020-09-27 21:49:22 : Script with problem: D:\server20\domains\KML-Generator\application\Controllers\ControllerMain.php | Line with problem: 243 | The data received from the url is incorrect, check the data

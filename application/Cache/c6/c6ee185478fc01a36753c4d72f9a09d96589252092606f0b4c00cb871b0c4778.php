@@ -49,7 +49,7 @@ class __TwigTemplate_072919fa5d8c672658f8f010fb26aca46ba0383b43d07be427fc5bf7010
         // line 3
         echo "    <div class=\"col-md-12 order-md-2\">
         <div class=\"card text-center\">
-            <form action=\"/main/kml\" method=\"post\" class=\"my-2\">
+            <form action=\"/main/kml\" method=\"post\" class=\"my-2 form-kml\">
                 <div class=\"input-group px-4 py-2\">
                     <div class=\"input-group-prepend\">
                         <span class=\"input-group-text\" id=\"url-data\"><i class=\"fa fa-share-alt pr-2\" aria-hidden=\"true\"></i>Data</span>
@@ -60,7 +60,7 @@ class __TwigTemplate_072919fa5d8c672658f8f010fb26aca46ba0383b43d07be427fc5bf7010
                     <div class=\"input-group-prepend\">
                         <span class=\"input-group-text\" id=\"url-type\"><i class=\"fa fa-file-text pr-2\" aria-hidden=\"true\"></i>Type of data</span>
                     </div>
-                    <select name=\"type\" class=\"form-control\" id=\"url-type\">
+                    <select name=\"type\" class=\"form-control tooltip-show\" id=\"url-type\">
                         <option value=\"0\">CSV</option>
                         <option value=\"1\">XML</option>
                     </select>

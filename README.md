@@ -21,17 +21,22 @@ Click on the button, if the link is not entered, a file with default data is cre
 #### Example change setting 
 
 1. If the csv file includes more input fields: `1; Dnepr; 48.4786954; 35.021489'; addition desc; info; other`
-    - change "application/Controllers/createArrayFromCsv.php"
+    - change "application/Controllers/ControllerMain.php"
         ```
-        $arrItemCsv = str_getcsv($row, ';');
-        $inside['id'] = trim($arrItemCsv[0]);
-        $inside['name'] = $this->trimSpecialCharacters(trim($arrItemCsv[1]));
-        $inside['lat'] = trim($arrItemCsv[2]);
-        $inside['lng'] = trim($arrItemCsv[3]);
-        $inside['add_desc'] = trim($arrItemCsv[4]);
-        $inside['info'] = trim($arrItemCsv[5]);
-        $inside['other'] = trim($arrItemCsv[6]);
-        $array[$arrItemCsv[0]] = $inside;
+      public function createArrayFromCsv(){
+           ... 
+           $countFields = 7;
+           ...
+            $arrItemCsv = str_getcsv($row, ';');
+            $inside['id'] = trim($arrItemCsv[0]);
+            $inside['name'] = $this->trimSpecialCharacters(trim($arrItemCsv[1]));
+            $inside['lat'] = trim($arrItemCsv[2]);
+            $inside['lng'] = trim($arrItemCsv[3]);
+            $inside['add_desc'] = trim($arrItemCsv[4]);
+            $inside['info'] = trim($arrItemCsv[5]);
+            $inside['other'] = trim($arrItemCsv[6]);
+            $array[$arrItemCsv[0]] = $inside;
+      }
         ```
    - change template "application/Views/kml/desc.twig"
         ```
@@ -56,16 +61,21 @@ Click on the button, if the link is not entered, a file with default data is cre
       </station>
     </document>
     ```
-    - change "application/Controllers/createArrayFromXml.php"
+    - change "application/Controllers/ControllerMain.php"
         ```
-        $key = (string)$item->id;
-        $array[$key]['id'] = $key;
-        $array[$key]['name'] = $this->trimSpecialCharacters((string)$item->name);
-        $array[$key]['lng'] = (string)$item->lng;
-        $array[$key]['lat'] = (string)$item->lat;
-        $array[$key]['add_desc'] = (string)$item->add_desc;
-        $array[$key]['info'] = (string)$item->info;
-        $array[$key]['other'] = (string)$item->other;
+      public function createArrayFromXml(){
+            ...
+            $countFields = 7;
+            ...
+            $key = (string)$item->id;
+            $array[$key]['id'] = $key;
+            $array[$key]['name'] = $this->trimSpecialCharacters((string)$item->name);
+            $array[$key]['lng'] = (string)$item->lng;
+            $array[$key]['lat'] = (string)$item->lat;
+            $array[$key]['add_desc'] = (string)$item->add_desc;
+            $array[$key]['info'] = (string)$item->info;
+            $array[$key]['other'] = (string)$item->other;
+      }
         ```
    - change template "application/Views/kml/desc.twig"
         ```

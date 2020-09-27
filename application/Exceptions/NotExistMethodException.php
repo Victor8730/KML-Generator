@@ -8,8 +8,8 @@ class NotExistMethodException extends \Exception
 {
     /**
      * NotExistMethodException constructor.
-     * @param object $controller
-     * @param string $method
+     * @param object|null $controller
+     * @param string|null $method
      */
     public function __construct(?object $controller, ?string $method)
     {

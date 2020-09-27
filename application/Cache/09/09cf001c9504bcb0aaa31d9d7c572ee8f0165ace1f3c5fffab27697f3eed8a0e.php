@@ -54,9 +54,20 @@ class __TwigTemplate_b07905da32e982309f7880a5ccb9c6301d6e2faf317e4f020ebddbbf835
     <div class=\"bg-dark collapse\" id=\"navbarHeader\" style=\"\">
         <div class=\"container\">
             <div class=\"row\">
-                <div class=\"col-md-12 py-4\">
+                <div class=\"col-md-12 py-2\">
                     <h4 class=\"text-white\">Kml file generator</h4>
-                    <p class=\"text-muted\">Designed to generate google maps import files</p>
+                    <ul>
+                        <li class=\"text-white\">Designed to generate google maps import files</li>
+                        <li class=\"text-white\">To create a kml file, you need to pass a link to the data, the data can
+                            be either in csv or xml format.
+                        </li>
+                        <li class=\"text-white\">An example of input data can be found on the links <a
+                                    href=\"/main/examplecsv\">csv</a>, <a href=\"/main/examplexml\">xml</a></li>
+                        <li class=\"text-white\">If your input data has more fields, then you can configure the formation
+                            of the array in the corresponding \"createArrayFromCsv\", \"createArrayFromXml\" method in the
+                            \"ControllerMain\". Also, do not forget to fix the template, it is located at \"kml/desc.twig\"
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -66,7 +77,7 @@ class __TwigTemplate_b07905da32e982309f7880a5ccb9c6301d6e2faf317e4f020ebddbbf835
             <a href=\"/\" class=\"navbar-toggler\" title=\"Show all task\">
                 <i class=\"fa fa-list fa-2x\" aria-hidden=\"true\"></i>
             </a>
-            <button class=\"navbar-toggler\" type=\"button\" title=\"Show info\" data-toggle=\"collapse\"
+            <button class=\"navbar-toggler tooltip-show\" type=\"button\" title=\"Show info\" data-toggle=\"collapse\"
                     data-target=\"#navbarHeader\" aria-controls=\"navbarHeader\" aria-expanded=\"true\"
                     aria-label=\"Toggle navigation\">
                 <i class=\"fa fa-info-circle fa-2x mr-4\" aria-hidden=\"true\"></i>
@@ -87,15 +98,17 @@ class __TwigTemplate_b07905da32e982309f7880a5ccb9c6301d6e2faf317e4f020ebddbbf835
 
     <div class=\"row content\">
         ";
-        // line 52
+        // line 63
         $this->displayBlock('content', $context, $blocks);
-        // line 54
+        // line 65
         echo "    </div>
 
     <footer class=\"my-5 pt-5 text-muted text-center text-small\">
         <p class=\"mb-1\">&copy; 2020 Webpagestudio</p>
         <ul class=\"list-group list-group-horizontal d-inline-flex\">
             <li class=\"list-group-item\"><a href=\"/\" class=\"text-info\">Home</a></li>
+            <li class=\"list-group-item\"><a href=\"/main/examplecsv\" class=\"text-info\">Example Csv</a></li>
+            <li class=\"list-group-item\"><a href=\"/main/examplexml\" class=\"text-info\">Example Xml</a></li>
         </ul>
     </footer>
 </div>
@@ -119,16 +132,25 @@ class __TwigTemplate_b07905da32e982309f7880a5ccb9c6301d6e2faf317e4f020ebddbbf835
             });
         }, false);
     })();
+    \$(function () {
+        \$('[data-toggle=\"tooltip\"],.tooltip-show').tooltip({'placement': 'bottom'});
+    });
+    function showAlert(message, type) {
+        \$('.info-block').append('<div class=\"alert alert-' + type + '\" role=\"alert\">' + message + '</div>').hide().fadeIn(1000).fadeOut(3000);
+        setTimeout(function () {
+            \$(\".alert\").alert('close');
+        }, 3000);
+    }
 </script>
 </body>
 </html>";
     }
 
-    // line 52
+    // line 63
     public function block_content($context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 53
+        // line 64
         echo "        ";
     }
 
@@ -139,7 +161,7 @@ class __TwigTemplate_b07905da32e982309f7880a5ccb9c6301d6e2faf317e4f020ebddbbf835
 
     public function getDebugInfo()
     {
-        return array (  132 => 53,  128 => 52,  93 => 54,  91 => 52,  38 => 1,);
+        return array (  154 => 64,  150 => 63,  104 => 65,  102 => 63,  38 => 1,);
     }
 
     public function getSourceContext()

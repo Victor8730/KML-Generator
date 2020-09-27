@@ -31,6 +31,9 @@ class Route extends Base
 
     /**
      * Starting the router, get uri
+     * Parse url if path is not empty
+     * We check the presence of a controller and if it is not, we return 404
+     *
      */
     public function initialize(): void
     {

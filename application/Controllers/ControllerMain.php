@@ -7,6 +7,7 @@ namespace Controllers;
 use Core\Controller;
 use Core\Route;
 use Exceptions\NotExistFileFromUrlException;
+use Exceptions\NotValidDataFromUrlException;
 use Exceptions\NotValidInputException;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -87,7 +88,22 @@ class ControllerMain extends Controller
      */
     public function exampleCsv(): string
     {
-        return '1; Dnepr; 48.4786954; 35.021489' . "\n" . '2; Kiev; 50.4712958; 30.5151878' . "\n" . '3; Lviv; 49.8326679; 23.9421962';
+        //return '1; Dnepr; 48.4786954; 35.021489' . "\n" . '2; Kiev; 50.4712958; 30.5151878' . "\n" . '3; Lviv; 49.8326679; 23.9421962';
+        return '1; Болгария; 42.2223099; 23.2962753' . "\n" .
+            '2;Молдова; 46.9632155;28.8064646' . "\n" .
+            '3;Польша;51.9324506;16.8922199' . "\n" .
+            '4;Румыния;45.9199629;22.7775577' . "\n" .
+            '5;Беларусь;53.6960078;25.7355285' . "\n" .
+            '6;Эстония;58.615534;23.8112948' . "\n" .
+            '7;Латвия;56.8751553;23.4231559' . "\n" .
+            '8;Литва;55.1684176;22.7623957' . "\n" .
+            '9;Чехия;49.7983573;14.353984' . "\n" .
+            '10;Хорватия;45.6624831;15.6901642' . "\n" .
+            '11;Словакия;48.667044;18.5785796' . "\n" .
+            '12;Словения;46.1478781;14.4326208' . "\n" .
+            '13;Сербия;44.6013207;20.9592154' . "\n" .
+            '14;Австрия;47.5255472;15.7197787' . "\n" .
+            '15;Германия;51.4931398;12.8959954';
     }
 
     /**
@@ -167,13 +183,13 @@ class ControllerMain extends Controller
         try {
             $this->validator->checkFileExistFromUrl($dataOutside['url']);
 
-            if($dataOutside['type'] === 0){
+            if ($dataOutside['type'] === 0) {
                 $data = file_get_contents($dataOutside['url']);
                 $rowsFromFile = explode("\n", $data);
-            }else{
-                $rowsFromFile =  simplexml_load_file($dataOutside['url']);
+            } else {
+                $rowsFromFile = simplexml_load_file($dataOutside['url']);
             }
-        }catch (NotExistFileFromUrlException $e){
+        } catch (NotExistFileFromUrlException $e) {
             Route::errorPage404();
         }
 
@@ -188,16 +204,26 @@ class ControllerMain extends Controller
     public function createArrayFromCsv(array $dataFromUrl): array
     {
         $array = $inside = [];
+        $countFields = 4;
 
-        foreach ($dataFromUrl as $row) {
-            if (!empty($row)) {
-                $arrItemCsv = str_getcsv($row, ';');
-                $inside['id'] = trim($arrItemCsv[0]);
-                $inside['name'] = $this->trimSpecialCharacters(trim($arrItemCsv[1]));
-                $inside['lat'] = trim($arrItemCsv[2]);
-                $inside['lng'] = trim($arrItemCsv[3]);
-                $array[$arrItemCsv[0]] = $inside;
+        try {
+            foreach ($dataFromUrl as $row) {
+                if (!empty($row)) {
+                    $arrItemCsv = str_getcsv($row, ';');
+
+                    if ($countFields !== count($arrItemCsv)) {
+                        throw new NotValidDataFromUrlException();
+                    } else {
+                        $inside['id'] = trim($arrItemCsv[0]);
+                        $inside['name'] = $this->trimSpecialCharacters(trim($arrItemCsv[1]));
+                        $inside['lat'] = trim($arrItemCsv[2]);
+                        $inside['lng'] = trim($arrItemCsv[3]);
+                        $array[$arrItemCsv[0]] = $inside;
+                    }
+                }
             }
+        } catch (NotValidDataFromUrlException $e) {
+            Route::errorPage404();
         }
 
         return $array;
@@ -211,15 +237,24 @@ class ControllerMain extends Controller
     public function createArrayFromXml(object $dataFromUrl): array
     {
         $array = [];
+        $countFields = 4;
 
-        foreach ($dataFromUrl->station as $item) {
-            if (!empty($item)) {
-                $key = (string)$item->id;
-                $array[$key]['id'] = $key;
-                $array[$key]['name'] = $this->trimSpecialCharacters((string)$item->name);
-                $array[$key]['lng'] = (string)$item->lng;
-                $array[$key]['lat'] = (string)$item->lat;
+        try {
+            foreach ($dataFromUrl->station as $item) {
+                if (!empty($item)) {
+                    if ($countFields !== count($item)) {
+                        throw new NotValidDataFromUrlException();
+                    } else {
+                        $key = (string)$item->id;
+                        $array[$key]['id'] = $key;
+                        $array[$key]['name'] = $this->trimSpecialCharacters((string)$item->name);
+                        $array[$key]['lng'] = (string)$item->lng;
+                        $array[$key]['lat'] = (string)$item->lat;
+                    }
+                }
             }
+        } catch (NotValidDataFromUrlException $e) {
+            Route::errorPage404();
         }
 
         return $array;
