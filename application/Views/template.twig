@@ -14,7 +14,7 @@
 </head>
 <body class="bg-light">
 <header>
-    <div class="bg-dark collapse" id="navbarHeader" style="">
+    <div class="bg-dark collapse" id="navbarHeader">
         <div class="container">
             <div class="row">
                 <div class="col-md-12 py-2">
@@ -25,7 +25,7 @@
                             be either in csv or xml format.
                         </li>
                         <li class="text-white">An example of input data can be found on the links <a
-                                    href="/main/examplecsv">csv</a>, <a href="/main/examplexml">xml</a></li>
+                                    href="/main/examplecsv" target="_blank">csv</a>, <a href="/main/examplexml" target="_blank">xml</a></li>
                         <li class="text-white">If your input data has more fields, then you can configure the formation
                             of the array in the corresponding "createArrayFromCsv", "createArrayFromXml" method in the
                             "ControllerMain". Also, do not forget to fix the template, it is located at "kml/desc.twig"
@@ -49,8 +49,8 @@
     </div>
 </header>
 <div class="container">
-    <div class="col-md-12">
-        <div class="info-block">
+    <div class="col-md-12 my-1">
+        <div class="info-block" style="height: 50px;">
 
         </div>
     </div>
@@ -68,8 +68,8 @@
         <p class="mb-1">&copy; 2020 Webpagestudio</p>
         <ul class="list-group list-group-horizontal d-inline-flex">
             <li class="list-group-item"><a href="/" class="text-info">Home</a></li>
-            <li class="list-group-item"><a href="/main/examplecsv" class="text-info">Example Csv</a></li>
-            <li class="list-group-item"><a href="/main/examplexml" class="text-info">Example Xml</a></li>
+            <li class="list-group-item"><a href="/main/examplecsv" class="text-info" target="_blank">Example Csv</a></li>
+            <li class="list-group-item"><a href="/main/examplexml" class="text-info" target="_blank">Example Xml</a></li>
         </ul>
     </footer>
 </div>
@@ -97,11 +97,24 @@
         $('[data-toggle="tooltip"],.tooltip-show').tooltip({'placement': 'bottom'});
     });
     function showAlert(message, type) {
-        $('.info-block').append('<div class="alert alert-' + type + '" role="alert">' + message + '</div>').hide().fadeIn(1000).fadeOut(3000);
+        $('.info-block').append('<div class="alert alert-' + type + '" role="alert">' + message + '</div>');
         setTimeout(function () {
             $(".alert").alert('close');
         }, 3000);
     }
+    $(".check-data").on('click', function () {
+        event.preventDefault();
+        let data = $('.form-kml').serialize();
+        $.ajax({
+            type: "POST",
+            url: 'main/kml',
+            data: data,
+            dataType: 'json',
+            success: function (answer) {
+               (answer['success'] === true) ? showAlert(answer['message'], 'success') : showAlert(answer['message'], 'danger');
+            }
+        });
+    });
 </script>
 </body>
 </html>

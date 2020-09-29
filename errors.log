@@ -45,3 +45,13 @@
 2020-09-27 21:47:23 : Script with problem: D:\server20\domains\KML-Generator\application\Controllers\ControllerMain.php | Line with problem: 211 | The data received from the url is incorrect, check the data
 2020-09-27 21:49:17 : Script with problem: D:\server20\domains\KML-Generator\application\Controllers\ControllerMain.php | Line with problem: 242 | The data received from the url is incorrect, check the data
 2020-09-27 21:49:22 : Script with problem: D:\server20\domains\KML-Generator\application\Controllers\ControllerMain.php | Line with problem: 243 | The data received from the url is incorrect, check the data
+2020-09-29 11:01:09 : Script with problem: D:\server20\domains\KML-Generator\application\Core\Validator.php | Line with problem: 159 | Method actionExampleCsv1 not exist in controller Controllers\ControllerMain
+2020-09-29 11:18:26 : Script with problem: D:\server20\domains\KML-Generator\application\Core\Validator.php | Line with problem: 159 | Method actionExampleCsv1 not exist in controller Controllers\ControllerMain
+2020-09-29 11:19:31 : Script with problem: D:\server20\domains\KML-Generator\application\Core\Validator.php | Line with problem: 159 | Method actionExampleCsv1 not exist in controller Controllers\ControllerMain
+2020-09-29 11:19:47 : Script with problem: D:\server20\domains\KML-Generator\application\Controllers\ControllerMain.php | Line with problem: 241 | The data received from the url is incorrect, check the data
+2020-09-29 11:21:55 : Script with problem: D:\server20\domains\KML-Generator\application\Controllers\ControllerMain.php | Line with problem: 227 | The data received from the url is incorrect, check the data
+2020-09-29 11:23:25 : Script with problem: D:\server20\domains\KML-Generator\application\Controllers\ControllerMain.php | Line with problem: 227 | The data received from the url is incorrect, check the data
+2020-09-29 11:23:31 : Script with problem: D:\server20\domains\KML-Generator\application\Controllers\ControllerMain.php | Line with problem: 227 | The data received from the url is incorrect, check the data
+2020-09-29 11:39:32 : Script with problem: D:\server20\domains\KML-Generator\application\Controllers\ControllerMain.php | Line with problem: 227 | The data received from the url is incorrect, check the data
+2020-09-29 11:47:11 : Script with problem: D:\server20\domains\KML-Generator\application\Controllers\ControllerMain.php | Line with problem: 227 | The data received from the url is incorrect, check the data
+2020-09-29 12:24:05 : Script with problem: D:\server20\domains\KML-Generator\application\Core\Validator.php | Line with problem: 159 | Method actionExampleCsv1 not exist in controller Controllers\ControllerMain

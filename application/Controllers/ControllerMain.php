@@ -46,7 +46,8 @@ class ControllerMain extends Controller
     }
 
     /**
-     * Generate kml file
+     * If ajax is a request, then we will return a json response
+     * Else generate kml file
      */
     public function actionKml(): void
     {
@@ -67,19 +68,30 @@ class ControllerMain extends Controller
         $restStyleNode->appendChild($restIconstyleNode);
         $docNode->appendChild($restStyleNode);
         $dataFromUrl = $this->getDataFromUrl($strOutside);
-        $data = ($strOutside['type'] === 0) ? $this->createArrayFromCsv($dataFromUrl) : $this->createArrayFromXml($dataFromUrl);
+
+        if (!empty($dataFromUrl)) {
+            $data = ($strOutside['type'] === 0) ? $this->createArrayFromCsv($dataFromUrl) : $this->createArrayFromXml($dataFromUrl);
+        } else {
+            $this->isAjax ? $this->ajaxResponse(false, 'Url not exist, check url!') : Route::errorPage404();
+        }
 
         if (!empty($data) && is_array($data)) {
             foreach ($data as $item) {
                 $this->createNode($item, $dom, $docNode);
             }
+        } else {
+            $this->isAjax ? $this->ajaxResponse(false, 'Data incorrect, update data!') : Route::errorPage404();
         }
 
         $kmlOutput = $dom->saveXML();
         header('Content-type: application/vnd.google-earth.kml+xml');
         header('Content-disposition: attachment; filename=KML_' . date("Ymd_His") . '.kml');
 
-        echo $kmlOutput;
+        if ($this->isAjax) {
+            $this->ajaxResponse(true, 'It’s ok!');
+        } else {
+            echo $kmlOutput;
+        }
     }
 
     /**
@@ -134,6 +146,11 @@ class ControllerMain extends Controller
 
     /**
      * Creating a location according to the specified parameters
+     * Creates a Placemark and append it to the Document.
+     * Creates an id attribute and assign it the value of id column.
+     * Create name, and description elements and assigns them the values of the name and address columns from the results.
+     * Creates a Point element.
+     * Creates a coordinates element and gives it the value of the lng and lat columns from the results.
      * @param $dataDB
      * @param $dom
      * @param $docNode
@@ -149,22 +166,17 @@ class ControllerMain extends Controller
         } catch (SyntaxError $e) {
         }
 
-        // Creates a Placemark and append it to the Document.
         $node = $dom->createElement('Placemark');
         $placeNode = $docNode->appendChild($node);
-        // Creates an id attribute and assign it the value of id column.
         $placeNode->setAttribute('id', 'placemark' . $dataDB['id']);
-        // Create name, and description elements and assigns them the values of the name and address columns from the results.
         $nameNode = $dom->createElement('name', htmlentities($dataDB['name']));
         $placeNode->appendChild($nameNode);
         $descNode = $dom->createElement('description', $description);
         $placeNode->appendChild($descNode);
         $styleUrl = $dom->createElement('styleUrl', '#exampleStyle');
         $placeNode->appendChild($styleUrl);
-        // Creates a Point element.
         $pointNode = $dom->createElement('Point');
         $placeNode->appendChild($pointNode);
-        // Creates a coordinates element and gives it the value of the lng and lat columns from the results.
         $coorStr = $dataDB['lng'] . ',' . $dataDB['lat'];
         $coorNode = $dom->createElement('coordinates', $coorStr);
         $pointNode->appendChild($coorNode);
@@ -178,8 +190,6 @@ class ControllerMain extends Controller
      */
     public function getDataFromUrl(array $dataOutside)
     {
-        $rowsFromFile = '';
-
         try {
             $this->validator->checkFileExistFromUrl($dataOutside['url']);
 
@@ -187,10 +197,11 @@ class ControllerMain extends Controller
                 $data = file_get_contents($dataOutside['url']);
                 $rowsFromFile = explode("\n", $data);
             } else {
+                libxml_use_internal_errors(true);
                 $rowsFromFile = simplexml_load_file($dataOutside['url']);
             }
         } catch (NotExistFileFromUrlException $e) {
-            Route::errorPage404();
+            return null;
         }
 
         return $rowsFromFile;
@@ -201,7 +212,7 @@ class ControllerMain extends Controller
      * @param array $dataFromUrl
      * @return array
      */
-    public function createArrayFromCsv(array $dataFromUrl): array
+    public function createArrayFromCsv(array $dataFromUrl): ?array
     {
         $array = $inside = [];
         $countFields = 4;
@@ -223,7 +234,7 @@ class ControllerMain extends Controller
                 }
             }
         } catch (NotValidDataFromUrlException $e) {
-            Route::errorPage404();
+            return null;
         }
 
         return $array;
@@ -234,7 +245,7 @@ class ControllerMain extends Controller
      * @param object $dataFromUrl
      * @return array
      */
-    public function createArrayFromXml(object $dataFromUrl): array
+    public function createArrayFromXml(object $dataFromUrl): ?array
     {
         $array = [];
         $countFields = 4;
@@ -254,7 +265,7 @@ class ControllerMain extends Controller
                 }
             }
         } catch (NotValidDataFromUrlException $e) {
-            Route::errorPage404();
+            return null;
         }
 
         return $array;

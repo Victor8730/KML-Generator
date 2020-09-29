@@ -12,7 +12,6 @@ use Exceptions\{FailedCopyException,
     NotExistClassException,
     NotValidInputException
 };
-use PHPUnit\TextUI\Exception;
 
 class  Validator
 {
@@ -160,9 +159,11 @@ class  Validator
         }
     }
 
+
     /**
      * Check if a file exists on another site
      * @param string $url
+     * @return void
      * @throws NotExistFileFromUrlException
      */
     public function checkFileExistFromUrl(string $url): void
@@ -171,11 +172,11 @@ class  Validator
             $url = $this->checkUrl($url);
             $urlHeaders = @get_headers($url);
 
-            if (!strpos($urlHeaders[0], '200')) {
+            if (!is_array($urlHeaders) || !strpos($urlHeaders[0], '200')) {
                 throw new NotExistFileFromUrlException($url);
             }
-        }catch (NotValidInputException $e){
-            Route::errorPage404();
+        } catch (NotValidInputException $e) {
+            throw new NotExistFileFromUrlException($url);
         }
     }
 
