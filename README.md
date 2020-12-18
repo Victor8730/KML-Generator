@@ -5,6 +5,12 @@
 Generating kml file for adding locations on google maps:
 - Data obtained from the link in the form of a csv or xml file;
 
+### How install
+
+Go to console and enter the command
+- git clone https://github.com/Victor8730/KML-Generator.git
+- composer update
+- bind folder to local domain
 
 ### How the app works
 
